@@ -3,7 +3,15 @@ name = "dj-ai-api"
 version = "0.1.0"
 description = "FastAPI backend for DJ AI Studio"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "pydantic-settings>=2.0",
+    "dj-ai-studio-core",
+]
+
+[tool.uv.sources]
+dj-ai-studio-core = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
