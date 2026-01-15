@@ -570,16 +570,17 @@ async def list_resources() -> list[Resource]:
 
 
 @server.read_resource()
-async def read_resource(uri: str) -> str:
+async def read_resource(uri: AnyUrl) -> str:
     """Read a resource."""
-    if uri == "dj://library/stats":
+    uri_str = str(uri)
+    if uri_str == "dj://library/stats":
         return await _get_library_stats()
-    elif uri == "dj://library/tracks":
+    elif uri_str == "dj://library/tracks":
         return await _get_all_tracks()
-    elif uri == "dj://library/sets":
+    elif uri_str == "dj://library/sets":
         return await _get_all_sets()
     else:
-        return json.dumps({"error": f"Unknown resource: {uri}"})
+        return json.dumps({"error": f"Unknown resource: {uri_str}"})
 
 
 async def _get_library_stats() -> str:
