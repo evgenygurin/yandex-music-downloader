@@ -172,8 +172,8 @@ for genre, count in sorted(genres.items(), key=lambda x: x[1], reverse=True):
 # Подсчет лейблов
 labels = {}
 for track in tracks_metadata:
-    l = track["label"]
-    labels[l] = labels.get(l, 0) + 1
+    label_name = track["label"]
+    labels[label_name] = labels.get(label_name, 0) + 1
 logger.info("\nТоп-5 лейблов:")
 for label, count in sorted(labels.items(), key=lambda x: x[1], reverse=True)[:5]:
     logger.info(f"  {label:30} {count:3d} треков")

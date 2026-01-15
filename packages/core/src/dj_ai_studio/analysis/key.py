@@ -191,4 +191,4 @@ def detect_key_from_file(
         KeyResult with detected key
     """
     y, sr = librosa.load(file_path, duration=duration, offset=offset, mono=True)
-    return detect_key(y, sr)
+    return detect_key(y, int(sr))

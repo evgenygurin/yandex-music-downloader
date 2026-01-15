@@ -65,7 +65,7 @@ def detect_bpm(
         confidence = 0.0
 
     return BPMResult(
-        bpm=round(tempo, 1),
+        bpm=round(float(tempo), 1),
         confidence=round(confidence, 2),
         beat_frames=beat_frames,
     )
@@ -88,4 +88,4 @@ def detect_bpm_from_file(
         BPMResult with detected tempo
     """
     y, sr = librosa.load(file_path, duration=duration, offset=offset, mono=True)
-    return detect_bpm(y, sr)
+    return detect_bpm(y, int(sr))

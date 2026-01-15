@@ -33,7 +33,7 @@ for attr in sorted(dir(track)):
             value = getattr(track, attr)
             if not callable(value):
                 print(f"  {attr:30} = {repr(value)[:100]}")
-        except:
+        except Exception:
             pass
 
 # Проверяем albums
@@ -46,7 +46,7 @@ if track.albums:
                 value = getattr(album, attr)
                 if not callable(value):
                     print(f"  {attr:30} = {repr(value)[:100]}")
-            except:
+            except Exception:
                 pass
 
 # Проверяем artists
@@ -59,7 +59,7 @@ if track.artists:
                 value = getattr(artist, attr)
                 if not callable(value):
                     print(f"  {attr:30} = {repr(value)[:100]}")
-            except:
+            except Exception:
                 pass
 
 # Получаем полную информацию о треке

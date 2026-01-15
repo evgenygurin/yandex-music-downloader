@@ -144,7 +144,7 @@ def recommend_track_criteria(gaps, priority="balance"):
 
     # Приоритет 2: Заполнение sparse BPM ranges
     if gaps["sparse_bpm_ranges"]:
-        for bpm_range, count in gaps["sparse_bpm_ranges"].items():
+        for bpm_range, _count in gaps["sparse_bpm_ranges"].items():
             # Находим какие ключи популярны в плейлисте
             popular_keys = sorted(
                 gaps["key_distribution"].items(), key=lambda x: x[1], reverse=True
@@ -211,7 +211,7 @@ def score_candidate_track(candidate, current_playlist, gaps):
 
     # 2. Sparse BPM range bonus (+30 points)
     if bpm:
-        for bpm_range, count in gaps["sparse_bpm_ranges"].items():
+        for bpm_range, _count in gaps["sparse_bpm_ranges"].items():
             range_min, range_max = map(int, bpm_range.split("-"))
             if range_min <= bpm < range_max:
                 score += 30

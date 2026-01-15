@@ -63,7 +63,7 @@ class AudioAnalyzer:
             duration=self.analysis_duration,
             mono=True,
         )
-        return self._analyze_signal(y, sr)
+        return self._analyze_signal(y, int(sr))
 
     def analyze_bytes(
         self,

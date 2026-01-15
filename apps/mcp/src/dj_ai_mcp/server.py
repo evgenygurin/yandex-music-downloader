@@ -11,12 +11,12 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+from dj_ai_studio.db import get_session, init_db
+from dj_ai_studio.db.models import SetORM, TrackORM
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Resource, TextContent, Tool
-
-from dj_ai_studio.db import get_session, init_db
-from dj_ai_studio.db.models import SetORM, TrackORM
+from pydantic import AnyUrl
 from sqlalchemy import select
 
 # Initialize server
@@ -556,19 +556,19 @@ async def list_resources() -> list[Resource]:
     """List available resources."""
     return [
         Resource(
-            uri="dj://library/stats",
+            uri=AnyUrl("dj://library/stats"),
             name="Library Statistics",
             description="Overview of tracks and sets in the library",
             mimeType="application/json",
         ),
         Resource(
-            uri="dj://library/tracks",
+            uri=AnyUrl("dj://library/tracks"),
             name="All Tracks",
             description="List of all tracks in the library",
             mimeType="application/json",
         ),
         Resource(
-            uri="dj://library/sets",
+            uri=AnyUrl("dj://library/sets"),
             name="All Sets",
             description="List of all DJ sets",
             mimeType="application/json",

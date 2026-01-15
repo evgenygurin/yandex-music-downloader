@@ -54,8 +54,10 @@ def cover_resolution_arg(astr: str) -> int:
 def lyrics_format_arg(astr: str) -> core.LyricsFormat:
     try:
         return core.LyricsFormat(astr)
-    except ValueError:
-        raise ArgumentTypeError(f"Допустимые значения: {','.join(core.LyricsFormat)}")
+    except ValueError as err:
+        raise ArgumentTypeError(
+            f"Допустимые значения: {','.join(core.LyricsFormat)}"
+        ) from err
 
 
 def main():

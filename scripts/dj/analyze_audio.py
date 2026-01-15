@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 # Проверка зависимостей
 try:
     import librosa
-    import numpy as np
 
     logger.info("✓ librosa доступна")
 except ImportError:
@@ -223,7 +222,7 @@ if bpms:
     logger.info(f"Средний BPM:  {sum(bpms) / len(bpms):.1f}")
 
 # Key статистика
-if HAS_ESSENTIA:
+if HAS_KEY_DETECTOR:
     keys = {}
     for track in tracks:
         if track.get("key"):
