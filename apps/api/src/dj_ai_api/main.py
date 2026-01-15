@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dj_ai_studio.db import init_db, close_db
 
 from .config import get_settings
-from .routers import tracks_router
+from .routers import sets_router, tracks_router
 
 
 @asynccontextmanager
@@ -42,6 +42,7 @@ def create_app() -> FastAPI:
 
     # Routers
     app.include_router(tracks_router, prefix="/api/v1")
+    app.include_router(sets_router, prefix="/api/v1")
 
     # Health check
     @app.get("/health")
