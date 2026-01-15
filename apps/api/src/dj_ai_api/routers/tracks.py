@@ -52,7 +52,7 @@ async def list_tracks(
 @router.get("/{track_id}", response_model=Track)
 async def get_track(db: DbSession, track_id: UUID) -> Track:
     """Get a single track by ID."""
-    result = await db.execute(select(TrackORM).where(TrackORM.id == track_id))
+    result = await db.execute(select(TrackORM).where(TrackORM.id == str(track_id)))
     track = result.scalar_one_or_none()
 
     if track is None:
@@ -65,7 +65,7 @@ async def get_track(db: DbSession, track_id: UUID) -> Track:
 async def create_track(db: DbSession, track: Track) -> Track:
     """Create a new track."""
     db_track = TrackORM(
-        id=track.id,
+        id=str(track.id),
         title=track.title,
         artists=track.artists,
         album=track.album,
@@ -106,7 +106,7 @@ async def update_track(
     track_update: dict,
 ) -> Track:
     """Update a track (partial update)."""
-    result = await db.execute(select(TrackORM).where(TrackORM.id == track_id))
+    result = await db.execute(select(TrackORM).where(TrackORM.id == str(track_id)))
     db_track = result.scalar_one_or_none()
 
     if db_track is None:
@@ -126,7 +126,7 @@ async def update_track(
 @router.delete("/{track_id}", status_code=204)
 async def delete_track(db: DbSession, track_id: UUID) -> None:
     """Delete a track."""
-    result = await db.execute(select(TrackORM).where(TrackORM.id == track_id))
+    result = await db.execute(select(TrackORM).where(TrackORM.id == str(track_id)))
     db_track = result.scalar_one_or_none()
 
     if db_track is None:
