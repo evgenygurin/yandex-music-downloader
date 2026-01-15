@@ -21,6 +21,7 @@ async def list_tracks(
     bpm_min: float | None = None,
     bpm_max: float | None = None,
     key: str | None = None,
+    camelot: str | None = None,
     energy_min: int | None = Query(None, ge=1, le=10),
     energy_max: int | None = Query(None, ge=1, le=10),
     source: str | None = None,
@@ -34,6 +35,8 @@ async def list_tracks(
         query = query.where(TrackORM.bpm <= bpm_max)
     if key is not None:
         query = query.where(TrackORM.key == key)
+    if camelot is not None:
+        query = query.where(TrackORM.camelot == camelot)
     if energy_min is not None:
         query = query.where(TrackORM.energy >= energy_min)
     if energy_max is not None:
