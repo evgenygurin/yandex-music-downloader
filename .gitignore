@@ -145,3 +145,8 @@ Thumbs.db
 # Project specific
 music_download/
 dj_set_techno_2025/
+
+# Database files
+*.db
+*.db-journal
+packages/core/data/
