@@ -198,9 +198,7 @@ def set_tags(
     iso8601_release_date = None
     release_year: str | None = None
     if album.release_date is not None:
-        iso8601_release_date = dt.datetime.fromisoformat(album.release_date).astimezone(
-            dt.UTC
-        )
+        iso8601_release_date = dt.datetime.fromisoformat(album.release_date).astimezone(dt.UTC)
         release_year = str(iso8601_release_date.year)
         iso8601_release_date = iso8601_release_date.strftime("%Y-%m-%d %H:%M:%S")
     if year := album.year:

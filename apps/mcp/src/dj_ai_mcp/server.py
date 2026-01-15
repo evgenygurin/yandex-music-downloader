@@ -11,12 +11,12 @@ import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+from dj_ai_studio.db import get_session, init_db
+from dj_ai_studio.db.models import SetORM, TrackORM
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Resource, TextContent, Tool
-
-from dj_ai_studio.db import get_session, init_db
-from dj_ai_studio.db.models import SetORM, TrackORM
+from pydantic import AnyUrl
 from sqlalchemy import select
 
 # Initialize server
@@ -266,8 +266,7 @@ async def search_tracks(
 
         if query:
             stmt = stmt.where(
-                TrackORM.title.ilike(f"%{query}%")
-                | TrackORM.artists.ilike(f"%{query}%")
+                TrackORM.title.ilike(f"%{query}%") | TrackORM.artists.ilike(f"%{query}%")
             )
         if bpm_min is not None:
             stmt = stmt.where(TrackORM.bpm >= bpm_min)
@@ -295,9 +294,7 @@ async def search_tracks(
 async def get_track(track_id: str) -> dict:
     """Get track by ID."""
     async with get_db() as session:
-        result = await session.execute(
-            select(TrackORM).where(TrackORM.id == track_id)
-        )
+        result = await session.execute(select(TrackORM).where(TrackORM.id == track_id))
         track = result.scalar_one_or_none()
 
         if track is None:
@@ -314,9 +311,7 @@ async def find_compatible_tracks(
     """Find tracks compatible for mixing."""
     async with get_db() as session:
         # Get source track
-        result = await session.execute(
-            select(TrackORM).where(TrackORM.id == track_id)
-        )
+        result = await session.execute(select(TrackORM).where(TrackORM.id == track_id))
         source = result.scalar_one_or_none()
 
         if source is None:
@@ -409,9 +404,7 @@ async def add_track_to_set(
             return {"error": "Set not found"}
 
         # Verify track exists
-        result = await session.execute(
-            select(TrackORM).where(TrackORM.id == track_id)
-        )
+        result = await session.execute(select(TrackORM).where(TrackORM.id == track_id))
         track = result.scalar_one_or_none()
         if track is None:
             return {"error": "Track not found"}
@@ -556,19 +549,19 @@ async def list_resources() -> list[Resource]:
     """List available resources."""
     return [
         Resource(
-            uri="dj://library/stats",
+            uri=AnyUrl("dj://library/stats"),
             name="Library Statistics",
             description="Overview of tracks and sets in the library",
             mimeType="application/json",
         ),
         Resource(
-            uri="dj://library/tracks",
+            uri=AnyUrl("dj://library/tracks"),
             name="All Tracks",
             description="List of all tracks in the library",
             mimeType="application/json",
         ),
         Resource(
-            uri="dj://library/sets",
+            uri=AnyUrl("dj://library/sets"),
             name="All Sets",
             description="List of all DJ sets",
             mimeType="application/json",
@@ -577,16 +570,17 @@ async def list_resources() -> list[Resource]:
 
 
 @server.read_resource()
-async def read_resource(uri: str) -> str:
+async def read_resource(uri: AnyUrl) -> str:
     """Read a resource."""
-    if uri == "dj://library/stats":
+    uri_str = str(uri)
+    if uri_str == "dj://library/stats":
         return await _get_library_stats()
-    elif uri == "dj://library/tracks":
+    elif uri_str == "dj://library/tracks":
         return await _get_all_tracks()
-    elif uri == "dj://library/sets":
+    elif uri_str == "dj://library/sets":
         return await _get_all_sets()
     else:
-        return json.dumps({"error": f"Unknown resource: {uri}"})
+        return json.dumps({"error": f"Unknown resource: {uri_str}"})
 
 
 async def _get_library_stats() -> str:
@@ -634,10 +628,7 @@ async def _get_all_sets() -> str:
         return json.dumps(
             {
                 "count": len(sets),
-                "sets": [
-                    {"id": s.id, "name": s.name, "description": s.description}
-                    for s in sets
-                ],
+                "sets": [{"id": s.id, "name": s.name, "description": s.description} for s in sets],
             },
             indent=2,
         )

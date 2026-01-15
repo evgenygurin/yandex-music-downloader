@@ -208,7 +208,7 @@ def save_variation(tracks, name, output_dir):
     m3u_file = var_dir / f"{name}.m3u8"
     with open(m3u_file, "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
-        for idx, track in enumerate(tracks, 1):
+        for _idx, track in enumerate(tracks, 1):
             f.write(
                 f"#EXTINF:{int(track['duration_ms'] / 1000)},{track['artist']} - {track['title']}\n"
             )

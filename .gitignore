@@ -146,6 +146,10 @@ Thumbs.db
 music_download/
 dj_set_techno_2025/
 
+# Claude Code local files
+CLAUDE.local.md
+.claude/settings.local.json
+
 # Database files
 *.db
 *.db-journal

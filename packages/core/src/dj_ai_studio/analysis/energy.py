@@ -100,4 +100,4 @@ def calculate_energy_from_file(
         EnergyResult with energy level
     """
     y, sr = librosa.load(file_path, duration=duration, offset=offset, mono=True)
-    return calculate_energy(y, sr)
+    return calculate_energy(y, int(sr))

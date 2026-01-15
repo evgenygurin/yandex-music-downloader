@@ -1,0 +1,30 @@
+# Local Project Memory (Template)
+
+Copy this file to `CLAUDE.local.md` for personal project preferences.
+This file is automatically gitignored.
+
+## Personal Preferences
+
+- Prefer verbose test output: `pytest -v --tb=long`
+- Use debug logging when running API
+
+## Local Environment
+
+```bash
+# My local database
+export DJ_AI_DATABASE_URL="sqlite+aiosqlite:///./dev.db"
+
+# Yandex token (get from https://yandex-music.readthedocs.io/en/main/token.html)
+export DJ_AI_YANDEX_TOKEN="your-token-here"
+```
+
+## Test Data
+
+- Sample tracks in `~/Music/test-tracks/`
+- Test BPM range: 120-140 for house, 140-160 for techno
+
+## Notes
+
+- API runs on http://localhost:8000
+- Web app runs on http://localhost:3000
+- MCP server connects via stdio

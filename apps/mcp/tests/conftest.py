@@ -2,10 +2,9 @@
 
 import pytest
 import pytest_asyncio
+from dj_ai_studio.db.models import Base, SetORM, SetTrackORM, TrackORM
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-
-from dj_ai_studio.db.models import Base, SetORM, SetTrackORM, TrackORM
 
 
 @pytest.fixture

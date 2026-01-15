@@ -3,7 +3,6 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from dj_ai_mcp.server import (
     _get_compatible_camelot,
     _track_to_dict,
