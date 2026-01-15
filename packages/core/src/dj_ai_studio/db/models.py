@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from sqlalchemy import (
+    Boolean,
     DateTime,
     Float,
     ForeignKey,
@@ -19,7 +20,6 @@ from sqlalchemy import (
     Integer,
     String,
     Text,
-    Boolean,
 )
 from sqlalchemy.dialects.sqlite import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -40,9 +40,7 @@ class TrackORM(Base):
     __tablename__ = "tracks"
 
     # Primary key
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
 
     # Basic info
     title: Mapped[str] = mapped_column(String(500), nullable=False)
@@ -59,9 +57,7 @@ class TrackORM(Base):
     # Extended analysis
     mood: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     genre: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
-    vocals: Mapped[str] = mapped_column(
-        String(10), nullable=False, default="none"
-    )
+    vocals: Mapped[str] = mapped_column(String(10), nullable=False, default="none")
     structure: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
 
     # User data
@@ -75,9 +71,7 @@ class TrackORM(Base):
     cover_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
 
     # Timestamps
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
     analyzed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     __table_args__ = (
@@ -102,31 +96,23 @@ class SetORM(Base):
     __tablename__ = "sets"
 
     # Primary key
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
 
     # Basic info
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    target_duration_min: Mapped[int] = mapped_column(
-        Integer, nullable=False, default=60
-    )
+    target_duration_min: Mapped[int] = mapped_column(Integer, nullable=False, default=60)
 
     # Set parameters
     style: Mapped[str | None] = mapped_column(String(20), nullable=True)
     energy_curve: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
 
     # Timestamps
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now
-    )
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
 
     # Relationships
-    tracks: Mapped[list["SetTrackORM"]] = relationship(
+    tracks: Mapped[list[SetTrackORM]] = relationship(
         "SetTrackORM",
         back_populates="set",
         cascade="all, delete-orphan",
@@ -152,9 +138,7 @@ class SetTrackORM(Base):
     __tablename__ = "set_tracks"
 
     # Primary key
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
 
     # Foreign key to set
     set_id: Mapped[str] = mapped_column(
@@ -166,15 +150,13 @@ class SetTrackORM(Base):
     track_id: Mapped[str] = mapped_column(String(36), nullable=False)
 
     # Transition info
-    transition_type: Mapped[str] = mapped_column(
-        String(10), nullable=False, default="mix"
-    )
+    transition_type: Mapped[str] = mapped_column(String(10), nullable=False, default="mix")
     mix_in_point_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     mix_out_point_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Relationships
-    set: Mapped["SetORM"] = relationship("SetORM", back_populates="tracks")
+    set: Mapped[SetORM] = relationship("SetORM", back_populates="tracks")
 
     __table_args__ = (
         Index("ix_set_tracks_set_id_position", "set_id", "position", unique=True),
@@ -194,9 +176,7 @@ class PlaylistORM(Base):
     __tablename__ = "playlists"
 
     # Primary key
-    id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid4())
-    )
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
 
     # Basic info
     name: Mapped[str] = mapped_column(String(300), nullable=False)
@@ -216,12 +196,8 @@ class PlaylistORM(Base):
     is_public: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
 
     # Timestamps
-    synced_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now
-    )
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now
-    )
+    synced_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
 
     __table_args__ = (
         Index("ix_playlists_source_source_id", "source", "source_id", unique=True),

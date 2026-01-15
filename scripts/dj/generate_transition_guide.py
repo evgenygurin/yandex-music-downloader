@@ -4,16 +4,13 @@
 Анализирует каждую пару треков и предлагает технику микширования
 """
 
-import sys
 import json
 import logging
 from pathlib import Path
 
 # Настройка логирования
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s | %(levelname)-8s | %(message)s',
-    datefmt='%H:%M:%S'
+    level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s", datefmt="%H:%M:%S"
 )
 logger = logging.getLogger(__name__)
 
@@ -23,54 +20,54 @@ METADATA_FILE = DJ_SET_DIR / "tracklist_metadata.json"
 
 # Camelot Wheel transitions
 CAMELOT_QUALITY = {
-    'perfect': ['same'],
-    'excellent': ['plus_one', 'minus_one'],
-    'good': ['major_minor_switch'],
-    'moderate': ['plus_two', 'minus_two'],
-    'challenging': ['other']
+    "perfect": ["same"],
+    "excellent": ["plus_one", "minus_one"],
+    "good": ["major_minor_switch"],
+    "moderate": ["plus_two", "minus_two"],
+    "challenging": ["other"],
 }
 
 
 def get_camelot_relationship(from_key, to_key):
     """Определение типа Camelot перехода"""
     if not from_key or not to_key:
-        return 'unknown', 'Неизвестно'
+        return "unknown", "Неизвестно"
 
     # Извлекаем номер и букву
-    from_num = int(''.join(filter(str.isdigit, from_key)))
-    to_num = int(''.join(filter(str.isdigit, to_key)))
+    from_num = int("".join(filter(str.isdigit, from_key)))
+    to_num = int("".join(filter(str.isdigit, to_key)))
     from_letter = from_key[-1]
     to_letter = to_key[-1]
 
     if from_key == to_key:
-        return 'perfect', 'Идеальный матч (тот же ключ)'
+        return "perfect", "Идеальный матч (тот же ключ)"
 
     if from_letter == to_letter:
         # Та же буква (major/minor)
         diff = (to_num - from_num) % 12
         if diff == 1 or diff == 11:
             if diff == 1:
-                return 'excellent', 'Energy boost (+1 на Camelot Wheel)'
+                return "excellent", "Energy boost (+1 на Camelot Wheel)"
             else:
-                return 'excellent', 'Energy decrease (-1 на Camelot Wheel)'
+                return "excellent", "Energy decrease (-1 на Camelot Wheel)"
         elif diff == 2 or diff == 10:
-            return 'moderate', 'Драматический переход (±2)'
+            return "moderate", "Драматический переход (±2)"
     else:
         # Переход A ↔ B
         if from_num == to_num:
-            return 'good', 'Major/Minor switch (смена настроения)'
+            return "good", "Major/Minor switch (смена настроения)"
 
-    return 'challenging', 'Сложный переход - требует осторожности'
+    return "challenging", "Сложный переход - требует осторожности"
 
 
 def recommend_transition_technique(track_a, track_b):
     """Рекомендация техники перехода"""
-    bpm_a = track_a.get('bpm', 0)
-    bpm_b = track_b.get('bpm', 0)
-    key_a = track_a.get('camelot')
-    key_b = track_b.get('camelot')
-    energy_a = track_a.get('energy', 5.0)
-    energy_b = track_b.get('energy', 5.0)
+    bpm_a = track_a.get("bpm", 0)
+    bpm_b = track_b.get("bpm", 0)
+    key_a = track_a.get("camelot")
+    key_b = track_b.get("camelot")
+    energy_a = track_a.get("energy", 5.0)
+    energy_b = track_b.get("energy", 5.0)
 
     bpm_diff = abs(bpm_b - bpm_a) if bpm_a and bpm_b else 0
     energy_diff = energy_b - energy_a
@@ -86,32 +83,40 @@ def recommend_transition_technique(track_a, track_b):
     elif bpm_diff <= 2:
         technique.append(f"⚡ **BPM близки** (Δ{bpm_diff:.1f}) - стандартный переход (32 бара)")
     elif bpm_diff <= 4:
-        technique.append(f"⚠️  **BPM разница** (Δ{bpm_diff:.1f}) - короткий переход (16 бар) или pitch adjust")
+        technique.append(
+            f"⚠️  **BPM разница** (Δ{bpm_diff:.1f}) - короткий переход (16 бар) или pitch adjust"
+        )
     else:
-        technique.append(f"🔴 **Большая BPM разница** (Δ{bpm_diff:.1f}) - требуется pitch shift или hard cut")
+        technique.append(
+            f"🔴 **Большая BPM разница** (Δ{bpm_diff:.1f}) - требуется pitch shift или hard cut"
+        )
 
     # 2. Key совместимость
-    if key_quality == 'perfect':
+    if key_quality == "perfect":
         technique.append("🎹 **Идеальный ключ** - можно делать длинный overlay")
-    elif key_quality == 'excellent':
+    elif key_quality == "excellent":
         technique.append(f"🎹 **Отличная совместимость** - {key_desc}")
-    elif key_quality == 'good':
+    elif key_quality == "good":
         technique.append(f"🎹 **Хороший переход** - {key_desc}")
-    elif key_quality == 'moderate':
+    elif key_quality == "moderate":
         technique.append(f"⚠️  **Умеренный переход** - {key_desc}")
     else:
-        technique.append(f"🔴 **Сложный переход** - используйте EQ swap или короткий cut")
+        technique.append("🔴 **Сложный переход** - используйте EQ swap или короткий cut")
 
     # 3. Energy flow
     if energy_diff > 1.5:
-        technique.append(f"📈 **Energy boost** (+{energy_diff:.1f}) - постепенно поднимайте highs/mids на Track B")
+        technique.append(
+            f"📈 **Energy boost** (+{energy_diff:.1f}) - постепенно поднимайте highs/mids на Track B"
+        )
     elif energy_diff < -1.5:
-        technique.append(f"📉 **Energy drop** ({energy_diff:.1f}) - используйте breakdown или EQ cut")
+        technique.append(
+            f"📉 **Energy drop** ({energy_diff:.1f}) - используйте breakdown или EQ cut"
+        )
     else:
         technique.append(f"➡️  **Стабильная энергия** (Δ{energy_diff:.1f}) - плавный переход")
 
     # 4. Рекомендуемая техника
-    if key_quality in ['perfect', 'excellent'] and bpm_diff <= 2:
+    if key_quality in ["perfect", "excellent"] and bpm_diff <= 2:
         mixing_style = "**BASS SWAP MIXING** - идеально для этого перехода"
         bars = "64-96 бар"
     elif bpm_diff <= 4:
@@ -134,7 +139,9 @@ def generate_transition_guide(tracks):
     guide.append("🎛️  DETAILED TRANSITION GUIDE")
     guide.append("=" * 100)
     guide.append("")
-    guide.append("Этот гайд содержит детальные рекомендации по переходам между каждой парой треков.")
+    guide.append(
+        "Этот гайд содержит детальные рекомендации по переходам между каждой парой треков."
+    )
     guide.append("Используйте его для планирования и практики вашего DJ сета.")
     guide.append("")
     guide.append("=" * 100)
@@ -145,23 +152,33 @@ def generate_transition_guide(tracks):
         track_b = tracks[i + 1]
 
         guide.append(f"\n{'─' * 100}")
-        guide.append(f"ПЕРЕХОД #{i+1}: Track {track_a['position']:02d} → Track {track_b['position']:02d}")
+        guide.append(
+            f"ПЕРЕХОД #{i + 1}: Track {track_a['position']:02d} → Track {track_b['position']:02d}"
+        )
         guide.append(f"{'─' * 100}")
         guide.append("")
 
         # Track A info
-        guide.append(f"🎵 TRACK A (OUTGOING):")
+        guide.append("🎵 TRACK A (OUTGOING):")
         guide.append(f"   {track_a['artist']} - {track_a['title']}")
-        guide.append(f"   BPM: {track_a.get('bpm', 'N/A')} | Key: {track_a.get('key', 'N/A')} ({track_a.get('camelot', 'N/A')})")
-        guide.append(f"   Energy: {track_a.get('energy', 'N/A')}/10 ({track_a.get('energy_category', 'N/A')})")
+        guide.append(
+            f"   BPM: {track_a.get('bpm', 'N/A')} | Key: {track_a.get('key', 'N/A')} ({track_a.get('camelot', 'N/A')})"
+        )
+        guide.append(
+            f"   Energy: {track_a.get('energy', 'N/A')}/10 ({track_a.get('energy_category', 'N/A')})"
+        )
         guide.append(f"   Genre: {track_a.get('genre', 'N/A')}")
         guide.append("")
 
         # Track B info
-        guide.append(f"🎵 TRACK B (INCOMING):")
+        guide.append("🎵 TRACK B (INCOMING):")
         guide.append(f"   {track_b['artist']} - {track_b['title']}")
-        guide.append(f"   BPM: {track_b.get('bpm', 'N/A')} | Key: {track_b.get('key', 'N/A')} ({track_b.get('camelot', 'N/A')})")
-        guide.append(f"   Energy: {track_b.get('energy', 'N/A')}/10 ({track_b.get('energy_category', 'N/A')})")
+        guide.append(
+            f"   BPM: {track_b.get('bpm', 'N/A')} | Key: {track_b.get('key', 'N/A')} ({track_b.get('camelot', 'N/A')})"
+        )
+        guide.append(
+            f"   Energy: {track_b.get('energy', 'N/A')}/10 ({track_b.get('energy_category', 'N/A')})"
+        )
         guide.append(f"   Genre: {track_b.get('genre', 'N/A')}")
         guide.append("")
 
@@ -210,9 +227,9 @@ logger.info("=" * 70)
 
 # Загрузка метаданных
 logger.info(f"\n📋 Загрузка метаданных из {METADATA_FILE}...")
-with open(METADATA_FILE, 'r', encoding='utf-8') as f:
+with open(METADATA_FILE, encoding="utf-8") as f:
     data = json.load(f)
-    tracks = data['tracks']
+    tracks = data["tracks"]
 
 logger.info(f"✓ Загружено {len(tracks)} треков\n")
 
@@ -222,7 +239,7 @@ guide_content = generate_transition_guide(tracks)
 
 # Сохранение
 guide_file = DJ_SET_DIR / "transition_guide.txt"
-with open(guide_file, 'w', encoding='utf-8') as f:
+with open(guide_file, "w", encoding="utf-8") as f:
     f.write(guide_content)
 
 logger.info(f"✓ Transition guide сохранен: {guide_file}")

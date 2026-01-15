@@ -2,12 +2,11 @@
 
 from uuid import UUID
 
+from dj_ai_studio.db import TrackORM
+from dj_ai_studio.models import Track
 from fastapi import APIRouter, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-
-from dj_ai_studio.db import TrackORM
-from dj_ai_studio.models import Track
 
 from ..deps import DbSession
 

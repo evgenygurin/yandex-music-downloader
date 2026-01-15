@@ -19,9 +19,7 @@ class TrackStructure(BaseModel):
     intro_ms: int | None = Field(default=None, ge=0, description="Intro end position")
     outro_ms: int | None = Field(default=None, ge=0, description="Outro start position")
     drop_ms: int | None = Field(default=None, ge=0, description="Main drop position")
-    breakdown_ms: int | None = Field(
-        default=None, ge=0, description="Breakdown start position"
-    )
+    breakdown_ms: int | None = Field(default=None, ge=0, description="Breakdown start position")
 
 
 class Track(BaseModel):
@@ -62,17 +60,13 @@ class Track(BaseModel):
     # Core DJ attributes
     bpm: float = Field(..., gt=0, le=300, description="Beats per minute")
     key: str = Field(..., min_length=1, max_length=3, description="Musical key")
-    camelot: str = Field(
-        ..., pattern=r"^(1[0-2]|[1-9])[AB]$", description="Camelot wheel notation"
-    )
+    camelot: str = Field(..., pattern=r"^(1[0-2]|[1-9])[AB]$", description="Camelot wheel notation")
     energy: int = Field(..., ge=1, le=10, description="Energy level 1-10")
 
     # Extended analysis
     mood: list[str] = Field(default_factory=list, description="Mood descriptors")
     genre: list[str] = Field(default_factory=list, description="Genre tags")
-    vocals: Literal["none", "some", "heavy"] = Field(
-        default="none", description="Amount of vocals"
-    )
+    vocals: Literal["none", "some", "heavy"] = Field(default="none", description="Amount of vocals")
     structure: TrackStructure = Field(
         default_factory=TrackStructure, description="Track structure markers"
     )
@@ -90,12 +84,8 @@ class Track(BaseModel):
     cover_url: str | None = Field(default=None, description="Cover art URL")
 
     # Timestamps
-    created_at: datetime = Field(
-        default_factory=datetime.now, description="When track was added"
-    )
-    analyzed_at: datetime | None = Field(
-        default=None, description="When track was last analyzed"
-    )
+    created_at: datetime = Field(default_factory=datetime.now, description="When track was added")
+    analyzed_at: datetime | None = Field(default=None, description="When track was last analyzed")
 
     @field_validator("key")
     @classmethod

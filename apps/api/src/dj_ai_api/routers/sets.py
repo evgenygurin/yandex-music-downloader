@@ -2,12 +2,11 @@
 
 from uuid import UUID
 
+from dj_ai_studio.db import SetORM, SetTrackORM
+from dj_ai_studio.models import Set, SetTrack
 from fastapi import APIRouter, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
-
-from dj_ai_studio.db import SetORM, SetTrackORM
-from dj_ai_studio.models import Set, SetTrack
 
 from ..deps import DbSession
 
@@ -21,12 +20,7 @@ async def list_sets(
     limit: int = Query(50, ge=1, le=100),
 ) -> list[Set]:
     """List all sets."""
-    query = (
-        select(SetORM)
-        .options(selectinload(SetORM.tracks))
-        .offset(skip)
-        .limit(limit)
-    )
+    query = select(SetORM).options(selectinload(SetORM.tracks)).offset(skip).limit(limit)
     result = await db.execute(query)
     sets = result.scalars().all()
 
@@ -36,11 +30,7 @@ async def list_sets(
 @router.get("/{set_id}", response_model=Set)
 async def get_set(db: DbSession, set_id: UUID) -> Set:
     """Get a single set by ID."""
-    query = (
-        select(SetORM)
-        .options(selectinload(SetORM.tracks))
-        .where(SetORM.id == set_id)
-    )
+    query = select(SetORM).options(selectinload(SetORM.tracks)).where(SetORM.id == set_id)
     result = await db.execute(query)
     dj_set = result.scalar_one_or_none()
 
@@ -78,11 +68,7 @@ async def update_set(
     set_update: dict,
 ) -> Set:
     """Update a set (partial update)."""
-    query = (
-        select(SetORM)
-        .options(selectinload(SetORM.tracks))
-        .where(SetORM.id == set_id)
-    )
+    query = select(SetORM).options(selectinload(SetORM.tracks)).where(SetORM.id == set_id)
     result = await db.execute(query)
     db_set = result.scalar_one_or_none()
 
@@ -122,11 +108,7 @@ async def add_track_to_set(
     track: SetTrack,
 ) -> Set:
     """Add a track to a set."""
-    query = (
-        select(SetORM)
-        .options(selectinload(SetORM.tracks))
-        .where(SetORM.id == set_id)
-    )
+    query = select(SetORM).options(selectinload(SetORM.tracks)).where(SetORM.id == set_id)
     result = await db.execute(query)
     db_set = result.scalar_one_or_none()
 

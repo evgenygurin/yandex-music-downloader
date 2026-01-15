@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Переименование треков плейлиста в порядке плейлиста"""
 
-import os
-import sys
 import logging
 import shutil
+import sys
 from pathlib import Path
+
 from yandex_music import Client
 
 # Настройка уровня логирования
@@ -13,9 +13,7 @@ log_level = logging.DEBUG if "--debug" in sys.argv else logging.INFO
 
 # Настройка логирования
 logging.basicConfig(
-    level=log_level,
-    format='%(asctime)s | %(levelname)-8s | %(message)s',
-    datefmt='%H:%M:%S'
+    level=log_level, format="%(asctime)s | %(levelname)-8s | %(message)s", datefmt="%H:%M:%S"
 )
 logger = logging.getLogger(__name__)
 
@@ -88,7 +86,7 @@ for idx, track_short in enumerate(playlist.tracks, 1):
         logger.debug(f"  ✓ Единственный кандидат: {found_file.name}")
     # Если несколько - пробуем найти по исполнителю
     elif len(candidates) > 1:
-        logger.debug(f"  Множественные кандидаты, поиск по исполнителю...")
+        logger.debug("  Множественные кандидаты, поиск по исполнителю...")
         for candidate in candidates:
             if any(artist.name in str(candidate.parent) for artist in track.artists):
                 found_file = candidate
@@ -115,7 +113,9 @@ for idx, track_short in enumerate(playlist.tracks, 1):
     try:
         shutil.copy2(found_file, target_file)
         file_size = target_file.stat().st_size / (1024 * 1024)  # MB
-        logger.info(f"✅ [{idx:02d}/{len(playlist.tracks)}] {artists} - {title} ({file_size:.1f} MB)")
+        logger.info(
+            f"✅ [{idx:02d}/{len(playlist.tracks)}] {artists} - {title} ({file_size:.1f} MB)"
+        )
         stats["success"] += 1
     except Exception as e:
         logger.error(f"❌ [{idx:02d}/{len(playlist.tracks)}] Ошибка копирования: {e}")

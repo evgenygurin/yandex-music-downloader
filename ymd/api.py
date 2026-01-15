@@ -76,9 +76,7 @@ def get_download_info(track: Track, quality: ApiTrackQuality) -> CustomDownloadI
     sign = base64.b64encode(hmac_sign.digest()).decode()[:-1]
     params["sign"] = sign
 
-    resp = client.request.get(
-        "https://api.music.yandex.net/get-file-info", params=params
-    )
+    resp = client.request.get("https://api.music.yandex.net/get-file-info", params=params)
     resp = typing.cast(dict, resp)
     e = resp["download_info"]
     raw_codec = e["codec"]

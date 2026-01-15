@@ -7,7 +7,8 @@ dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.32",
     "pydantic-settings>=2.0",
-    "dj-ai-studio-core",
+    "python-multipart>=0.0.9",
+    "dj-ai-studio-core[yandex,audio]",
 ]
 
 [tool.uv.sources]

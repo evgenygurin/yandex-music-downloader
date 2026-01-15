@@ -4,17 +4,15 @@
 Создает оптимальные последовательности для minimal/deep tech/progressive techno
 """
 
-import sys
 import json
 import logging
-from pathlib import Path
+import sys
 from collections import defaultdict
+from pathlib import Path
 
 # Настройка логирования
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s | %(levelname)-8s | %(message)s',
-    datefmt='%H:%M:%S'
+    level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s", datefmt="%H:%M:%S"
 )
 logger = logging.getLogger(__name__)
 
@@ -25,30 +23,30 @@ METADATA_FILE = DJ_SET_DIR / "tracklist_metadata.json"
 # Camelot Wheel: совместимые переходы
 CAMELOT_TRANSITIONS = {
     # Format: camelot_code -> [perfect_match, energy_boost, mood_change]
-    '1A': ['1A', '2A', '12A', '1B'],
-    '2A': ['2A', '3A', '1A', '2B'],
-    '3A': ['3A', '4A', '2A', '3B'],
-    '4A': ['4A', '5A', '3A', '4B'],
-    '5A': ['5A', '6A', '4A', '5B'],
-    '6A': ['6A', '7A', '5A', '6B'],
-    '7A': ['7A', '8A', '6A', '7B'],
-    '8A': ['8A', '9A', '7A', '8B'],
-    '9A': ['9A', '10A', '8A', '9B'],
-    '10A': ['10A', '11A', '9A', '10B'],
-    '11A': ['11A', '12A', '10A', '11B'],
-    '12A': ['12A', '1A', '11A', '12B'],
-    '1B': ['1B', '2B', '12B', '1A'],
-    '2B': ['2B', '3B', '1B', '2A'],
-    '3B': ['3B', '4B', '2B', '3A'],
-    '4B': ['4B', '5B', '3B', '4A'],
-    '5B': ['5B', '6B', '4B', '5A'],
-    '6B': ['6B', '7B', '5B', '6A'],
-    '7B': ['7B', '8B', '6B', '7A'],
-    '8B': ['8B', '9B', '7B', '8A'],
-    '9B': ['9B', '10B', '8B', '9A'],
-    '10B': ['10B', '11B', '9B', '10A'],
-    '11B': ['11B', '12B', '10B', '11A'],
-    '12B': ['12B', '1B', '11B', '12A'],
+    "1A": ["1A", "2A", "12A", "1B"],
+    "2A": ["2A", "3A", "1A", "2B"],
+    "3A": ["3A", "4A", "2A", "3B"],
+    "4A": ["4A", "5A", "3A", "4B"],
+    "5A": ["5A", "6A", "4A", "5B"],
+    "6A": ["6A", "7A", "5A", "6B"],
+    "7A": ["7A", "8A", "6A", "7B"],
+    "8A": ["8A", "9A", "7A", "8B"],
+    "9A": ["9A", "10A", "8A", "9B"],
+    "10A": ["10A", "11A", "9A", "10B"],
+    "11A": ["11A", "12A", "10A", "11B"],
+    "12A": ["12A", "1A", "11A", "12B"],
+    "1B": ["1B", "2B", "12B", "1A"],
+    "2B": ["2B", "3B", "1B", "2A"],
+    "3B": ["3B", "4B", "2B", "3A"],
+    "4B": ["4B", "5B", "3B", "4A"],
+    "5B": ["5B", "6B", "4B", "5A"],
+    "6B": ["6B", "7B", "5B", "6A"],
+    "7B": ["7B", "8B", "6B", "7A"],
+    "8B": ["8B", "9B", "7B", "8A"],
+    "9B": ["9B", "10B", "8B", "9A"],
+    "10B": ["10B", "11B", "9B", "10A"],
+    "11B": ["11B", "12B", "10B", "11A"],
+    "12B": ["12B", "1B", "11B", "12A"],
 }
 
 
@@ -90,7 +88,7 @@ def calculate_compatibility_score(current_camelot, next_camelot, current_bpm, ne
     return score
 
 
-def build_harmonic_chain(tracks, start_key=None, strategy='progressive'):
+def build_harmonic_chain(tracks, start_key=None, strategy="progressive"):
     """
     Построение гармонической цепочки треков
 
@@ -105,7 +103,7 @@ def build_harmonic_chain(tracks, start_key=None, strategy='progressive'):
     # Группировка треков по Camelot
     by_camelot = defaultdict(list)
     for track in tracks:
-        camelot = track.get('camelot')
+        camelot = track.get("camelot")
         if camelot:
             by_camelot[camelot].append(track)
 
@@ -118,7 +116,7 @@ def build_harmonic_chain(tracks, start_key=None, strategy='progressive'):
         current = by_camelot[popular_key].pop(0)
 
     chain = [current]
-    used_tracks = {current['position']}
+    used_tracks = {current["position"]}
 
     # Построение цепочки
     while len(chain) < len(tracks):
@@ -126,8 +124,8 @@ def build_harmonic_chain(tracks, start_key=None, strategy='progressive'):
         best_track = None
         best_camelot = None
 
-        current_camelot = current.get('camelot')
-        current_bpm = current.get('bpm')
+        current_camelot = current.get("camelot")
+        current_bpm = current.get("bpm")
 
         # Найти лучший следующий трек
         for camelot, candidates in by_camelot.items():
@@ -135,22 +133,23 @@ def build_harmonic_chain(tracks, start_key=None, strategy='progressive'):
                 continue
 
             for track in candidates:
-                if track['position'] in used_tracks:
+                if track["position"] in used_tracks:
                     continue
 
                 score = calculate_compatibility_score(
-                    current_camelot,
-                    camelot,
-                    current_bpm,
-                    track.get('bpm')
+                    current_camelot, camelot, current_bpm, track.get("bpm")
                 )
 
                 # Бонус за progressive стратегию (нарастание BPM)
-                if strategy == 'progressive' and track.get('bpm', 0) > current_bpm:
+                if strategy == "progressive" and track.get("bpm", 0) > current_bpm:
                     score += 10
 
                 # Бонус за plateau (те же BPM+key)
-                if strategy == 'plateau' and track.get('bpm') == current_bpm and camelot == current_camelot:
+                if (
+                    strategy == "plateau"
+                    and track.get("bpm") == current_bpm
+                    and camelot == current_camelot
+                ):
                     score += 15
 
                 if score > best_score:
@@ -160,17 +159,17 @@ def build_harmonic_chain(tracks, start_key=None, strategy='progressive'):
 
         if best_track:
             chain.append(best_track)
-            used_tracks.add(best_track['position'])
+            used_tracks.add(best_track["position"])
             by_camelot[best_camelot].remove(best_track)
             current = best_track
         else:
             # Не нашли совместимый - берем любой оставшийся
             for camelot, candidates in by_camelot.items():
-                remaining = [t for t in candidates if t['position'] not in used_tracks]
+                remaining = [t for t in candidates if t["position"] not in used_tracks]
                 if remaining:
                     track = remaining[0]
                     chain.append(track)
-                    used_tracks.add(track['position'])
+                    used_tracks.add(track["position"])
                     by_camelot[camelot].remove(track)
                     current = track
                     break
@@ -184,18 +183,18 @@ def generate_set_variations(tracks):
 
     # 1. Progressive Journey (120 → 130+ BPM)
     logger.info("\n🎚️  Генерация Progressive Journey...")
-    progressive = build_harmonic_chain(tracks.copy(), strategy='progressive')
-    variations['progressive'] = progressive
+    progressive = build_harmonic_chain(tracks.copy(), strategy="progressive")
+    variations["progressive"] = progressive
 
     # 2. Plateau Mix (long blocks in same key)
     logger.info("🎵 Генерация Plateau Mix...")
-    plateau = build_harmonic_chain(tracks.copy(), strategy='plateau')
-    variations['plateau'] = plateau
+    plateau = build_harmonic_chain(tracks.copy(), strategy="plateau")
+    variations["plateau"] = plateau
 
     # 3. Harmonic Journey (разнообразие)
     logger.info("🌊 Генерация Harmonic Journey...")
-    journey = build_harmonic_chain(tracks.copy(), strategy='journey')
-    variations['journey'] = journey
+    journey = build_harmonic_chain(tracks.copy(), strategy="journey")
+    variations["journey"] = journey
 
     return variations
 
@@ -207,30 +206,32 @@ def save_variation(tracks, name, output_dir):
 
     # M3U8
     m3u_file = var_dir / f"{name}.m3u8"
-    with open(m3u_file, 'w', encoding='utf-8') as f:
+    with open(m3u_file, "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         for idx, track in enumerate(tracks, 1):
-            f.write(f"#EXTINF:{int(track['duration_ms']/1000)},{track['artist']} - {track['title']}\n")
+            f.write(
+                f"#EXTINF:{int(track['duration_ms'] / 1000)},{track['artist']} - {track['title']}\n"
+            )
             f.write(f"#EXTGENRE:{track['genre']}\n")
-            if track.get('bpm'):
+            if track.get("bpm"):
                 f.write(f"#EXTBPM:{track['bpm']}\n")
-            if track.get('key'):
+            if track.get("key"):
                 f.write(f"#EXTKEY:{track['key']}\n")
-            if track.get('camelot'):
+            if track.get("camelot"):
                 f.write(f"#EXTCAMELOT:{track['camelot']}\n")
             f.write(f"{track['filename']}\n")
 
     # Tracklist TXT
     txt_file = var_dir / f"{name}_tracklist.txt"
-    with open(txt_file, 'w', encoding='utf-8') as f:
-        f.write(f"═══════════════════════════════════════════\n")
+    with open(txt_file, "w", encoding="utf-8") as f:
+        f.write("═══════════════════════════════════════════\n")
         f.write(f"  {name.upper().replace('_', ' ')}\n")
-        f.write(f"═══════════════════════════════════════════\n\n")
+        f.write("═══════════════════════════════════════════\n\n")
 
         for idx, track in enumerate(tracks, 1):
-            bpm = track.get('bpm', '???')
-            key = track.get('key', '???')
-            camelot = track.get('camelot', '???')
+            bpm = track.get("bpm", "???")
+            key = track.get("key", "???")
+            camelot = track.get("camelot", "???")
             f.write(f"{idx:02d}. {track['artist']} - {track['title']}\n")
             f.write(f"    {bpm} BPM | {key} ({camelot}) | {track['genre']}\n\n")
 
@@ -247,14 +248,14 @@ logger.info("=" * 70)
 
 # Загрузка метаданных
 logger.info(f"\n📋 Загрузка метаданных из {METADATA_FILE}...")
-with open(METADATA_FILE, 'r', encoding='utf-8') as f:
+with open(METADATA_FILE, encoding="utf-8") as f:
     data = json.load(f)
-    tracks = data['tracks']
+    tracks = data["tracks"]
 
 logger.info(f"✓ Загружено {len(tracks)} треков")
 
 # Фильтр: только треки с Camelot + BPM
-tracks_with_key = [t for t in tracks if t.get('camelot') and t.get('bpm')]
+tracks_with_key = [t for t in tracks if t.get("camelot") and t.get("bpm")]
 logger.info(f"✓ Треков с Key+BPM: {len(tracks_with_key)}")
 
 if len(tracks_with_key) < 10:
@@ -282,8 +283,8 @@ logger.info("📊 СТАТИСТИКА ВАРИАЦИЙ")
 logger.info("=" * 70)
 
 for name, track_list in variations.items():
-    bpms = [t['bpm'] for t in track_list if t.get('bpm')]
-    keys = [t['camelot'] for t in track_list if t.get('camelot')]
+    bpms = [t["bpm"] for t in track_list if t.get("bpm")]
+    keys = [t["camelot"] for t in track_list if t.get("camelot")]
 
     logger.info(f"\n{name.upper()}:")
     logger.info(f"  Треков: {len(track_list)}")

@@ -3,7 +3,22 @@ name = "dj-ai-mcp"
 version = "0.1.0"
 description = "MCP Server for DJ AI Studio"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "mcp>=1.0",
+    "dj-ai-studio-core[yandex,audio]",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[project.scripts]
+dj-ai-mcp = "dj_ai_mcp.server:main"
+
+[tool.uv.sources]
+dj-ai-studio-core = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]
@@ -11,3 +26,8 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/dj_ai_mcp"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]

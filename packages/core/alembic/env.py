@@ -7,21 +7,21 @@ and imports all ORM models to ensure they are registered with Base.metadata.
 import asyncio
 from logging.config import fileConfig
 
-from sqlalchemy import pool
-from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
-
 from alembic import context
 
 # Import Base and all models to register them with metadata
 from dj_ai_studio.db import Base
+
 # These imports ensure models are registered with Base.metadata
 from dj_ai_studio.db.models import (  # noqa: F401
-    TrackORM,
+    PlaylistORM,
     SetORM,
     SetTrackORM,
-    PlaylistORM,
+    TrackORM,
 )
+from sqlalchemy import pool
+from sqlalchemy.engine import Connection
+from sqlalchemy.ext.asyncio import async_engine_from_config
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -4,19 +4,18 @@
 + анализ аудио для BPM и Key
 """
 
-import sys
-import logging
-import json
 import csv
+import json
+import logging
+import sys
 from pathlib import Path
+
 from yandex_music import Client
 
 # Настройка логирования
 log_level = logging.DEBUG if "--debug" in sys.argv else logging.INFO
 logging.basicConfig(
-    level=log_level,
-    format='%(asctime)s | %(levelname)-8s | %(message)s',
-    datefmt='%H:%M:%S'
+    level=log_level, format="%(asctime)s | %(levelname)-8s | %(message)s", datefmt="%H:%M:%S"
 )
 logger = logging.getLogger(__name__)
 
@@ -56,14 +55,18 @@ for idx, track_short in enumerate(playlist.tracks, 1):
 
     # Альбом и жанр
     album_title = track.albums[0].title if track.albums else "Unknown"
-    genre = track.albums[0].genre if track.albums and hasattr(track.albums[0], 'genre') else "Unknown"
-    release_date = track.albums[0].release_date if track.albums and track.albums[0].release_date else None
+    genre = (
+        track.albums[0].genre if track.albums and hasattr(track.albums[0], "genre") else "Unknown"
+    )
+    release_date = (
+        track.albums[0].release_date if track.albums and track.albums[0].release_date else None
+    )
 
     # Лейбл
     label = track.albums[0].labels[0].name if track.albums and track.albums[0].labels else "Unknown"
 
     # Громкость (ReplayGain)
-    loudness = track.r128.i if track.r128 and hasattr(track.r128, 'i') else None
+    loudness = track.r128.i if track.r128 and hasattr(track.r128, "i") else None
 
     # Длительность
     duration_ms = track.duration_ms
@@ -102,18 +105,23 @@ logger.info("\n📊 Экспорт метаданных...")
 
 # 1. JSON для программной обработки
 json_file = DJ_SET_DIR / "tracklist_metadata.json"
-with open(json_file, 'w', encoding='utf-8') as f:
-    json.dump({
-        "playlist_title": playlist.title,
-        "playlist_id": PLAYLIST_ID,
-        "total_tracks": len(tracks_metadata),
-        "tracks": tracks_metadata
-    }, f, ensure_ascii=False, indent=2)
+with open(json_file, "w", encoding="utf-8") as f:
+    json.dump(
+        {
+            "playlist_title": playlist.title,
+            "playlist_id": PLAYLIST_ID,
+            "total_tracks": len(tracks_metadata),
+            "tracks": tracks_metadata,
+        },
+        f,
+        ensure_ascii=False,
+        indent=2,
+    )
 logger.info(f"✓ JSON: {json_file}")
 
 # 2. CSV для Excel/DJ софта
 csv_file = DJ_SET_DIR / "tracklist.csv"
-with open(csv_file, 'w', encoding='utf-8', newline='') as f:
+with open(csv_file, "w", encoding="utf-8", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=tracks_metadata[0].keys())
     writer.writeheader()
     writer.writerows(tracks_metadata)
@@ -121,22 +129,24 @@ logger.info(f"✓ CSV: {csv_file}")
 
 # 3. M3U8 плейлист для DJ Pro AI
 m3u_file = DJ_SET_DIR / "techno_2025.m3u8"
-with open(m3u_file, 'w', encoding='utf-8') as f:
+with open(m3u_file, "w", encoding="utf-8") as f:
     f.write("#EXTM3U\n")
     for track in tracks_metadata:
         # Расширенные теги M3U
-        f.write(f"#EXTINF:{int(track['duration_ms']/1000)},{track['artist']} - {track['title']}\n")
+        f.write(
+            f"#EXTINF:{int(track['duration_ms'] / 1000)},{track['artist']} - {track['title']}\n"
+        )
         f.write(f"#EXTGENRE:{track['genre']}\n")
-        if track['bpm']:
+        if track["bpm"]:
             f.write(f"#EXTBPM:{track['bpm']}\n")
-        if track['key']:
+        if track["key"]:
             f.write(f"#EXTKEY:{track['key']}\n")
         f.write(f"{track['filename']}\n")
 logger.info(f"✓ M3U8: {m3u_file}")
 
 # 4. Текстовый tracklist для постов
 txt_file = DJ_SET_DIR / "tracklist.txt"
-with open(txt_file, 'w', encoding='utf-8') as f:
+with open(txt_file, "w", encoding="utf-8") as f:
     f.write(f"🎧 {playlist.title}\n")
     f.write(f"{'=' * 60}\n\n")
     for track in tracks_metadata:
@@ -153,24 +163,24 @@ logger.info(f"Всего треков:     {len(tracks_metadata)}")
 # Подсчет жанров
 genres = {}
 for track in tracks_metadata:
-    g = track['genre']
+    g = track["genre"]
     genres[g] = genres.get(g, 0) + 1
-logger.info(f"\nЖанры:")
+logger.info("\nЖанры:")
 for genre, count in sorted(genres.items(), key=lambda x: x[1], reverse=True):
     logger.info(f"  {genre:20} {count:3d} треков")
 
 # Подсчет лейблов
 labels = {}
 for track in tracks_metadata:
-    l = track['label']
+    l = track["label"]
     labels[l] = labels.get(l, 0) + 1
-logger.info(f"\nТоп-5 лейблов:")
+logger.info("\nТоп-5 лейблов:")
 for label, count in sorted(labels.items(), key=lambda x: x[1], reverse=True)[:5]:
     logger.info(f"  {label:30} {count:3d} треков")
 
 # Общая длительность
-total_duration = sum(t['duration_ms'] for t in tracks_metadata) / 1000 / 60
-logger.info(f"\nОбщая длительность: {total_duration:.1f} минут ({total_duration/60:.1f} часов)")
+total_duration = sum(t["duration_ms"] for t in tracks_metadata) / 1000 / 60
+logger.info(f"\nОбщая длительность: {total_duration:.1f} минут ({total_duration / 60:.1f} часов)")
 
 logger.info("=" * 60)
 logger.info("\n✨ ГОТОВО! Метаданные экспортированы")

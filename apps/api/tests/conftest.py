@@ -3,14 +3,12 @@
 from collections.abc import AsyncGenerator
 
 import pytest
+from dj_ai_api.deps import get_db
+from dj_ai_api.main import create_app
+from dj_ai_studio.db import Base
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-
-from dj_ai_studio.db import Base
-from dj_ai_api.main import create_app
-from dj_ai_api.deps import get_db
-
 
 # Test database URL (in-memory SQLite)
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"

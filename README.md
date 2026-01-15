@@ -148,7 +148,71 @@ ID:
 - Теги с несколькими значениями (`\xa9ART` и `aART`) устанвливаются с
 разделителем `;`. Пример: `Artist1; Artist2; Artist3`
 
-## DJ Tools
+## DJ AI Studio
+
+Полнофункциональная AI-платформа для DJ на базе этого проекта.
+
+### Архитектура
+
+```text
+dj-ai-studio/
+├── packages/core/          # Python библиотека (модели, анализ, Yandex API)
+├── apps/
+│   ├── api/               # FastAPI бэкенд
+│   ├── mcp/               # MCP сервер для Claude Code
+│   └── web/               # Next.js 15 веб-приложение
+```
+
+### Возможности
+
+- **Библиотека треков** — поиск и фильтрация по BPM, тональности, энергии
+- **Аудио анализ** — автоматическое определение BPM, тональности (Camelot), уровня энергии
+- **DJ сеты** — создание сетов с рекомендациями гармонического микширования
+- **Yandex Music** — импорт плейлистов и метаданных
+- **MCP Server** — 8 инструментов для Claude Code
+
+### Быстрый старт
+
+```bash
+# Установка зависимостей
+uv sync --all-packages
+pnpm install
+
+# Запуск бэкенда
+uv run uvicorn dj_ai_studio.api:app --reload
+
+# Запуск веб-приложения
+cd apps/web && pnpm dev
+```
+
+### MCP Server для Claude Code
+
+Добавьте в `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "dj-ai-studio": {
+      "command": "uv",
+      "args": ["run", "dj-ai-mcp"],
+      "cwd": "/path/to/yandex-music-downloader"
+    }
+  }
+}
+```
+
+**Инструменты:** `search_tracks`, `get_track`, `find_compatible_tracks`, `analyze_track`, `create_set`, `add_track_to_set`, `get_set`, `suggest_next_track`
+
+### Технологии
+
+| Компонент | Стек |
+|-----------|------|
+| Core | Python 3.12, Pydantic, SQLAlchemy, librosa |
+| API | FastAPI, aiosqlite |
+| Web | Next.js 15, React 19, Tailwind CSS, shadcn/ui |
+| MCP | mcp-python |
+
+## DJ Tools (Legacy)
 
 Для использования DJ-утилит (анализ BPM, тональности, создание плейлистов) см. документацию в [docs/dj/](docs/dj/).
 

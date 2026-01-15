@@ -30,12 +30,8 @@ class SetTrack(BaseModel):
     transition_type: Literal["mix", "cut", "fade", "slam", "echo"] = Field(
         default="mix", description="Transition type from previous track"
     )
-    mix_in_point_ms: int | None = Field(
-        default=None, ge=0, description="Mix-in cue point in ms"
-    )
-    mix_out_point_ms: int | None = Field(
-        default=None, ge=0, description="Mix-out point in ms"
-    )
+    mix_in_point_ms: int | None = Field(default=None, ge=0, description="Mix-in cue point in ms")
+    mix_out_point_ms: int | None = Field(default=None, ge=0, description="Mix-out point in ms")
     notes: str | None = Field(default=None, description="DJ notes for this transition")
 
     model_config = {
@@ -75,14 +71,17 @@ class Set(BaseModel):
     target_duration_min: int = Field(
         default=60, ge=5, le=480, description="Target duration in minutes"
     )
-    style: Literal[
-        "warm-up",
-        "progressive",
-        "peak-time",
-        "closing",
-        "journey",
-        "mixed",
-    ] | None = Field(default=None, description="Set style/vibe")
+    style: (
+        Literal[
+            "warm-up",
+            "progressive",
+            "peak-time",
+            "closing",
+            "journey",
+            "mixed",
+        ]
+        | None
+    ) = Field(default=None, description="Set style/vibe")
     energy_curve: list[int] = Field(
         default_factory=list,
         description="Target energy levels per segment (1-10)",
@@ -90,12 +89,8 @@ class Set(BaseModel):
     tracks: list[SetTrack] = Field(
         default_factory=list, description="Ordered tracks with transitions"
     )
-    created_at: datetime = Field(
-        default_factory=datetime.now, description="Creation timestamp"
-    )
-    updated_at: datetime = Field(
-        default_factory=datetime.now, description="Last update timestamp"
-    )
+    created_at: datetime = Field(default_factory=datetime.now, description="Creation timestamp")
+    updated_at: datetime = Field(default_factory=datetime.now, description="Last update timestamp")
 
     @field_validator("energy_curve")
     @classmethod

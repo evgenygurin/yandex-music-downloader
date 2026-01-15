@@ -2,7 +2,7 @@
 """Исследование доступных метаданных трека в Yandex Music API"""
 
 import sys
-import json
+
 from yandex_music import Client
 
 TOKEN = sys.argv[1] if len(sys.argv) > 1 else None
@@ -28,7 +28,7 @@ print("=" * 80)
 # Все доступные атрибуты трека
 print("\n📋 АТРИБУТЫ ОБЪЕКТА TRACK:")
 for attr in sorted(dir(track)):
-    if not attr.startswith('_'):
+    if not attr.startswith("_"):
         try:
             value = getattr(track, attr)
             if not callable(value):
@@ -41,7 +41,7 @@ if track.albums:
     album = track.albums[0]
     print("\n📀 АТРИБУТЫ АЛЬБОМА:")
     for attr in sorted(dir(album)):
-        if not attr.startswith('_'):
+        if not attr.startswith("_"):
             try:
                 value = getattr(album, attr)
                 if not callable(value):
@@ -54,7 +54,7 @@ if track.artists:
     artist = track.artists[0]
     print("\n🎤 АТРИБУТЫ ИСПОЛНИТЕЛЯ:")
     for attr in sorted(dir(artist)):
-        if not attr.startswith('_'):
+        if not attr.startswith("_"):
             try:
                 value = getattr(artist, attr)
                 if not callable(value):
@@ -68,7 +68,7 @@ try:
     # Попытка получить дополнительные данные
     track_full = client.tracks([track.id])[0]
     print(f"  Supplement available: {hasattr(track_full, 'supplement')}")
-    if hasattr(track_full, 'supplement') and track_full.supplement:
+    if hasattr(track_full, "supplement") and track_full.supplement:
         print(f"  Supplement: {track_full.supplement}")
 except Exception as e:
     print(f"  Error: {e}")

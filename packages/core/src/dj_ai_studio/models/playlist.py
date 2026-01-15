@@ -41,21 +41,13 @@ class Playlist(BaseModel):
         ..., description="Source platform"
     )
     source_id: str = Field(..., min_length=1, description="ID on source platform")
-    source_url: str | None = Field(
-        default=None, description="URL to playlist on source"
-    )
-    track_ids: list[UUID] = Field(
-        default_factory=list, description="Ordered list of Track UUIDs"
-    )
+    source_url: str | None = Field(default=None, description="URL to playlist on source")
+    track_ids: list[UUID] = Field(default_factory=list, description="Ordered list of Track UUIDs")
     cover_url: str | None = Field(default=None, description="Cover image URL")
     owner: str | None = Field(default=None, description="Playlist owner name")
     is_public: bool = Field(default=True, description="Whether playlist is public")
-    synced_at: datetime = Field(
-        default_factory=datetime.now, description="Last sync timestamp"
-    )
-    created_at: datetime = Field(
-        default_factory=datetime.now, description="First import timestamp"
-    )
+    synced_at: datetime = Field(default_factory=datetime.now, description="Last sync timestamp")
+    created_at: datetime = Field(default_factory=datetime.now, description="First import timestamp")
 
     @property
     def track_count(self) -> int:

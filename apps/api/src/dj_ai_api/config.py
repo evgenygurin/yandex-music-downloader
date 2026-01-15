@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: list[str] = ["http://localhost:3000"]
 
+    # Yandex Music
+    yandex_token: str | None = None
+    yandex_timeout: int = 20
+    yandex_max_retries: int = 3
+
 
 @lru_cache
 def get_settings() -> Settings:

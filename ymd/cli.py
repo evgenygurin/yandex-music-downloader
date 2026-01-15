@@ -8,12 +8,10 @@ import typing
 from argparse import ArgumentTypeError
 from collections.abc import Callable, Generator, Iterable
 from pathlib import Path
-from typing import Optional, Union
 from urllib.parse import urlparse
 
-from yandex_music import Album, Playlist, Track
-
 from dj_ai_panel import core
+from yandex_music import Album, Playlist, Track
 
 DEFAULT_DELAY = 0
 
@@ -27,16 +25,14 @@ FETCH_PAGE_SIZE = 10
 logger = logging.getLogger("yandex-music-downloader")
 
 
-def show_default(text: Optional[str] = None) -> str:
+def show_default(text: str | None = None) -> str:
     default = "по умолчанию: %(default)s"
     if text is None:
         return default
     return f"{text} ({default})"
 
 
-def checked_int_arg(
-    min_value: int, max_value: Optional[int] = None
-) -> Callable[[str], int]:
+def checked_int_arg(min_value: int, max_value: int | None = None) -> Callable[[str], int]:
     def func(astr: str) -> int:
         aint = int(astr)
         if aint >= min_value and (max_value is None or aint <= max_value):
@@ -86,9 +82,7 @@ def main():
         help=show_default("Формат текста песни"),
         choices=core.LyricsFormat,
     )
-    common_group.add_argument(
-        "--add-lyrics", action="store_true", help=argparse.SUPPRESS
-    )
+    common_group.add_argument("--add-lyrics", action="store_true", help=argparse.SUPPRESS)
     common_group.add_argument(
         "--embed-cover", action="store_true", help="Встраивать обложку в аудиофайл"
     )
@@ -122,9 +116,7 @@ def main():
         "--compatibility-level",
         metavar="<Уровень совместимости>",
         default=1,
-        type=checked_int_arg(
-            core.MIN_COMPATIBILITY_LEVEL, core.MAX_COMPATIBILITY_LEVEL
-        ),
+        type=checked_int_arg(core.MIN_COMPATIBILITY_LEVEL, core.MAX_COMPATIBILITY_LEVEL),
         help=show_default(
             f"Уровень совместимости, от {core.MIN_COMPATIBILITY_LEVEL} до {core.MAX_COMPATIBILITY_LEVEL}. См. README для подробного описания"
         ),
@@ -211,9 +203,7 @@ def main():
     )
 
     if args.add_lyrics:
-        print(
-            "Аргумент --add-lyrics устарел и будет удален в будущем. Используйте --lyrics-format"
-        )
+        print("Аргумент --add-lyrics устарел и будет удален в будущем. Используйте --lyrics-format")
         args.lyrics_format = core.LyricsFormat.TEXT
 
     if args.url is not None:
@@ -239,7 +229,7 @@ def main():
     )
     result_tracks: Iterable[Track]
 
-    def album_tracks_gen(album_ids: Iterable[Union[int, str]]) -> Generator[Track]:
+    def album_tracks_gen(album_ids: Iterable[int | str]) -> Generator[Track]:
         for album_id in album_ids:
             if full_album := client.albums_with_tracks(album_id):
                 if volumes := full_album.volumes:
@@ -271,9 +261,7 @@ def main():
                             yield album.id
                         else:
                             nonlocal total_track_count
-                            if (
-                                track_count := album.track_count
-                            ) and total_track_count is not None:
+                            if (track_count := album.track_count) and total_track_count is not None:
                                 total_track_count -= track_count
                 else:
                     break
@@ -304,9 +292,7 @@ def main():
         def playlist_tracks_gen() -> Generator[Track]:
             tracks = playlist.fetch_tracks()
             for i in range(0, len(tracks), FETCH_PAGE_SIZE):
-                yield from client.tracks(
-                    [track.id for track in tracks[i : i + FETCH_PAGE_SIZE]]
-                )
+                yield from client.tracks([track.id for track in tracks[i : i + FETCH_PAGE_SIZE]])
 
         result_tracks = playlist_tracks_gen()
     else:
@@ -330,9 +316,7 @@ def main():
             args.unsafe_path,
         )
         if args.skip_existing:
-            if any(
-                Path(str(save_path) + s).is_file() for s in core.AUDIO_FILE_SUFFIXES
-            ):
+            if any(Path(str(save_path) + s).is_file() for s in core.AUDIO_FILE_SUFFIXES):
                 continue
 
         save_dir = save_path.parent

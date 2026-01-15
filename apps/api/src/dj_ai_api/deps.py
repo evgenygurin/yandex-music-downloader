@@ -3,10 +3,9 @@
 from collections.abc import AsyncGenerator
 from typing import Annotated
 
+from dj_ai_studio.db import get_session
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from dj_ai_studio.db import get_session
 
 from .config import Settings, get_settings
 

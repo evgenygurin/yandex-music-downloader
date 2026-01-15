@@ -3,9 +3,8 @@
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
 from dj_ai_studio.models import Playlist, Set, SetTrack, Track, TrackStructure
+from pydantic import ValidationError
 
 
 class TestTrack:

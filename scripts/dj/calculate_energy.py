@@ -4,16 +4,13 @@
 + генерация визуализации energy flow сета
 """
 
-import sys
 import json
 import logging
 from pathlib import Path
 
 # Настройка логирования
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s | %(levelname)-8s | %(message)s',
-    datefmt='%H:%M:%S'
+    level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s", datefmt="%H:%M:%S"
 )
 logger = logging.getLogger(__name__)
 
@@ -69,16 +66,16 @@ def calculate_energy_level(bpm, loudness_lufs, genre, key=None):
 
     # 3. Genre contribution (20% веса)
     genre_scores = {
-        'techno': 8.0,
-        'house': 6.5,
-        'dance': 7.0,
-        'electronics': 5.5,
-        'ambient': 3.0,
-        'deep house': 5.0,
-        'minimal': 5.5,
+        "techno": 8.0,
+        "house": 6.5,
+        "dance": 7.0,
+        "electronics": 5.5,
+        "ambient": 3.0,
+        "deep house": 5.0,
+        "minimal": 5.5,
     }
 
-    genre_lower = genre.lower() if genre else ''
+    genre_lower = genre.lower() if genre else ""
     genre_score = 6.0  # Default
 
     for g, score in genre_scores.items():
@@ -92,7 +89,7 @@ def calculate_energy_level(bpm, loudness_lufs, genre, key=None):
     if key:
         # Minor keys = темнее, lower energy
         # Major keys = ярче, higher energy
-        if 'm' in key or key.endswith('m'):
+        if "m" in key or key.endswith("m"):
             key_score = 5.0  # Minor
         else:
             key_score = 7.0  # Major
@@ -130,10 +127,10 @@ def generate_ascii_visualization(tracks):
 
     max_width = 60
     for idx, track in enumerate(tracks, 1):
-        energy = track.get('energy', 5.0)
+        energy = track.get("energy", 5.0)
         category = categorize_energy(energy)
-        bpm = track.get('bpm', '???')
-        key = track.get('key', '???')
+        bpm = track.get("bpm", "???")
+        key = track.get("key", "???")
 
         # Energy bar
         bar_length = int((energy / 10.0) * max_width)
@@ -167,7 +164,7 @@ def generate_set_structure_analysis(tracks):
     analysis.append("=" * 80)
     analysis.append("")
 
-    total_duration = sum(t.get('duration_ms', 0) for t in tracks) / 1000 / 60
+    total_duration = sum(t.get("duration_ms", 0) for t in tracks) / 1000 / 60
     analysis.append(f"Total Duration: {total_duration:.1f} minutes")
     analysis.append("")
 
@@ -177,18 +174,18 @@ def generate_set_structure_analysis(tracks):
 
     phases = [
         ("WARM-UP", tracks[:phase_size]),
-        ("BUILDING", tracks[phase_size:phase_size*2]),
-        ("PEAK TIME", tracks[phase_size*2:phase_size*3]),
-        ("CLIMAX", tracks[phase_size*3:phase_size*4]),
-        ("COOL-DOWN", tracks[phase_size*4:]),
+        ("BUILDING", tracks[phase_size : phase_size * 2]),
+        ("PEAK TIME", tracks[phase_size * 2 : phase_size * 3]),
+        ("CLIMAX", tracks[phase_size * 3 : phase_size * 4]),
+        ("COOL-DOWN", tracks[phase_size * 4 :]),
     ]
 
     for phase_name, phase_tracks in phases:
         if not phase_tracks:
             continue
 
-        energies = [t.get('energy', 5.0) for t in phase_tracks]
-        bpms = [t.get('bpm') for t in phase_tracks if t.get('bpm')]
+        energies = [t.get("energy", 5.0) for t in phase_tracks]
+        bpms = [t.get("bpm") for t in phase_tracks if t.get("bpm")]
 
         avg_energy = sum(energies) / len(energies) if energies else 0
         avg_bpm = sum(bpms) / len(bpms) if bpms else 0
@@ -197,7 +194,9 @@ def generate_set_structure_analysis(tracks):
         analysis.append(f"  Tracks:      {len(phase_tracks)}")
         analysis.append(f"  Avg Energy:  {avg_energy:.1f}/10")
         analysis.append(f"  Avg BPM:     {avg_bpm:.1f}")
-        analysis.append(f"  BPM Range:   {min(bpms):.1f} - {max(bpms):.1f}" if bpms else "  BPM Range:   N/A")
+        analysis.append(
+            f"  BPM Range:   {min(bpms):.1f} - {max(bpms):.1f}" if bpms else "  BPM Range:   N/A"
+        )
         analysis.append("")
 
     analysis.append("=" * 80)
@@ -214,9 +213,9 @@ logger.info("=" * 70)
 
 # Загрузка метаданных
 logger.info(f"\n📋 Загрузка метаданных из {METADATA_FILE}...")
-with open(METADATA_FILE, 'r', encoding='utf-8') as f:
+with open(METADATA_FILE, encoding="utf-8") as f:
     data = json.load(f)
-    tracks = data['tracks']
+    tracks = data["tracks"]
 
 logger.info(f"✓ Загружено {len(tracks)} треков\n")
 
@@ -225,32 +224,36 @@ logger.info("🔋 Расчет Energy Level для каждого трека...\
 energy_stats = {"calculated": 0, "missing_data": 0}
 
 for track in tracks:
-    bpm = track.get('bpm')
-    loudness = track.get('loudness_lufs')
-    genre = track.get('genre')
-    key = track.get('key')
+    bpm = track.get("bpm")
+    loudness = track.get("loudness_lufs")
+    genre = track.get("genre")
+    key = track.get("key")
 
     if bpm or loudness:
         energy = calculate_energy_level(bpm, loudness, genre, key)
-        track['energy'] = energy
-        track['energy_category'] = categorize_energy(energy)
+        track["energy"] = energy
+        track["energy_category"] = categorize_energy(energy)
         energy_stats["calculated"] += 1
 
-        logger.info(f"✓ [{track['position']:02d}] {track['artist'][:30]:30} | Energy: {energy:.1f}/10 ({track['energy_category']})")
+        logger.info(
+            f"✓ [{track['position']:02d}] {track['artist'][:30]:30} | Energy: {energy:.1f}/10 ({track['energy_category']})"
+        )
         logger.debug(f"    BPM: {bpm}, Loudness: {loudness} LUFS, Genre: {genre}")
     else:
         energy_stats["missing_data"] += 1
-        logger.warning(f"⚠️  [{track['position']:02d}] {track['artist'][:30]:30} | Недостаточно данных для расчета энергии")
+        logger.warning(
+            f"⚠️  [{track['position']:02d}] {track['artist'][:30]:30} | Недостаточно данных для расчета энергии"
+        )
 
 # Сохранение обновленных метаданных
 logger.info("\n💾 Сохранение обновленных метаданных...")
-with open(METADATA_FILE, 'w', encoding='utf-8') as f:
+with open(METADATA_FILE, "w", encoding="utf-8") as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 logger.info(f"✓ Сохранено в {METADATA_FILE}")
 
 # Генерация визуализаций
 viz_file = DJ_SET_DIR / "energy_flow_visualization.txt"
-with open(viz_file, 'w', encoding='utf-8') as f:
+with open(viz_file, "w", encoding="utf-8") as f:
     f.write(generate_ascii_visualization(tracks))
     f.write("\n\n")
     f.write(generate_set_structure_analysis(tracks))
@@ -268,10 +271,10 @@ logger.info("=" * 70)
 logger.info(f"✅ Рассчитано Energy Level: {energy_stats['calculated']}/{len(tracks)}")
 logger.info(f"⚠️  Недостаточно данных:    {energy_stats['missing_data']}/{len(tracks)}")
 
-energies = [t['energy'] for t in tracks if t.get('energy')]
+energies = [t["energy"] for t in tracks if t.get("energy")]
 if energies:
     logger.info(f"\nEnergy диапазон: {min(energies):.1f} - {max(energies):.1f}")
-    logger.info(f"Средний Energy:  {sum(energies)/len(energies):.1f}")
+    logger.info(f"Средний Energy:  {sum(energies) / len(energies):.1f}")
 
 logger.info("=" * 70)
 logger.info("\n✨ Готово!")

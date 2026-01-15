@@ -112,9 +112,7 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
         ...     tracks = result.scalars().all()
     """
     if _async_session_factory is None:
-        raise RuntimeError(
-            "Database not initialized. Call init_db() first."
-        )
+        raise RuntimeError("Database not initialized. Call init_db() first.")
 
     async with _async_session_factory() as session:
         try:
@@ -140,9 +138,7 @@ async def get_session_context() -> AsyncGenerator[AsyncSession, None]:
         ...     session.add(track)
     """
     if _async_session_factory is None:
-        raise RuntimeError(
-            "Database not initialized. Call init_db() first."
-        )
+        raise RuntimeError("Database not initialized. Call init_db() first.")
 
     async with _async_session_factory() as session:
         try:

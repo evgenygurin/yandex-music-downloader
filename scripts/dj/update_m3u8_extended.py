@@ -10,9 +10,7 @@ from pathlib import Path
 
 # Настройка логирования
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s | %(levelname)-8s | %(message)s',
-    datefmt='%H:%M:%S'
+    level=logging.INFO, format="%(asctime)s | %(levelname)-8s | %(message)s", datefmt="%H:%M:%S"
 )
 logger = logging.getLogger(__name__)
 
@@ -30,40 +28,40 @@ def generate_extended_m3u8(tracks, output_file):
 
     for track in tracks:
         # Стандартный EXTINF
-        duration_sec = int(track['duration_ms'] / 1000) if track.get('duration_ms') else 0
+        duration_sec = int(track["duration_ms"] / 1000) if track.get("duration_ms") else 0
         artist_title = f"{track['artist']} - {track['title']}"
         lines.append(f"#EXTINF:{duration_sec},{artist_title}")
 
         # Расширенные теги
-        if track.get('genre'):
+        if track.get("genre"):
             lines.append(f"#EXTGENRE:{track['genre']}")
 
-        if track.get('bpm'):
+        if track.get("bpm"):
             lines.append(f"#EXTBPM:{track['bpm']}")
 
-        if track.get('key'):
+        if track.get("key"):
             lines.append(f"#EXTKEY:{track['key']}")
 
-        if track.get('camelot'):
+        if track.get("camelot"):
             lines.append(f"#EXTCAMELOT:{track['camelot']}")
 
-        if track.get('energy'):
+        if track.get("energy"):
             lines.append(f"#EXTENERGY:{track['energy']}")
 
-        if track.get('energy_category'):
+        if track.get("energy_category"):
             lines.append(f"#EXTENERGYCATEGORY:{track['energy_category']}")
 
-        if track.get('loudness_lufs') is not None:
+        if track.get("loudness_lufs") is not None:
             lines.append(f"#EXTLOUDNESS:{track['loudness_lufs']}")
 
-        if track.get('label'):
+        if track.get("label"):
             lines.append(f"#EXTLABEL:{track['label']}")
 
-        if track.get('key_confidence'):
+        if track.get("key_confidence"):
             lines.append(f"#EXTKEYCONFIDENCE:{track['key_confidence']}")
 
         # Имя файла
-        lines.append(track['filename'])
+        lines.append(track["filename"])
         lines.append("")  # Пустая строка между треками
 
     return "\n".join(lines)
@@ -79,19 +77,19 @@ logger.info("=" * 70)
 
 # Загрузка метаданных
 logger.info(f"\n📋 Загрузка метаданных из {METADATA_FILE}...")
-with open(METADATA_FILE, 'r', encoding='utf-8') as f:
+with open(METADATA_FILE, encoding="utf-8") as f:
     data = json.load(f)
-    tracks = data['tracks']
+    tracks = data["tracks"]
 
 logger.info(f"✓ Загружено {len(tracks)} треков")
 
 # Проверка доступных полей
 fields_stats = {
-    'bpm': sum(1 for t in tracks if t.get('bpm')),
-    'key': sum(1 for t in tracks if t.get('key')),
-    'camelot': sum(1 for t in tracks if t.get('camelot')),
-    'energy': sum(1 for t in tracks if t.get('energy')),
-    'loudness_lufs': sum(1 for t in tracks if t.get('loudness_lufs') is not None),
+    "bpm": sum(1 for t in tracks if t.get("bpm")),
+    "key": sum(1 for t in tracks if t.get("key")),
+    "camelot": sum(1 for t in tracks if t.get("camelot")),
+    "energy": sum(1 for t in tracks if t.get("energy")),
+    "loudness_lufs": sum(1 for t in tracks if t.get("loudness_lufs") is not None),
 }
 
 logger.info("\n📊 Доступные метаданные:")
@@ -105,14 +103,14 @@ m3u8_content = generate_extended_m3u8(tracks, None)
 
 # Сохранение основного M3U8
 main_m3u8 = DJ_SET_DIR / "techno_2025_extended.m3u8"
-with open(main_m3u8, 'w', encoding='utf-8') as f:
+with open(main_m3u8, "w", encoding="utf-8") as f:
     f.write(m3u8_content)
 
 logger.info(f"✓ Основной M3U8: {main_m3u8}")
 
 # Также обновим оригинальный файл
 original_m3u8 = DJ_SET_DIR / "techno_2025.m3u8"
-with open(original_m3u8, 'w', encoding='utf-8') as f:
+with open(original_m3u8, "w", encoding="utf-8") as f:
     f.write(m3u8_content)
 
 logger.info(f"✓ Обновлен оригинальный: {original_m3u8}")

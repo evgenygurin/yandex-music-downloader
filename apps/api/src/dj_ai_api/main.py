@@ -1,15 +1,14 @@
 """FastAPI application entry point."""
 
-from contextlib import asynccontextmanager
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
+from dj_ai_studio.db import close_db, init_db
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from dj_ai_studio.db import init_db, close_db
-
 from .config import get_settings
-from .routers import sets_router, tracks_router
+from .routers import analysis_router, sets_router, tracks_router, yandex_router
 
 
 @asynccontextmanager
@@ -43,6 +42,8 @@ def create_app() -> FastAPI:
     # Routers
     app.include_router(tracks_router, prefix="/api/v1")
     app.include_router(sets_router, prefix="/api/v1")
+    app.include_router(yandex_router, prefix="/api/v1")
+    app.include_router(analysis_router, prefix="/api/v1")
 
     # Health check
     @app.get("/health")
