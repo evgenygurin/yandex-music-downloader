@@ -15,10 +15,11 @@
 4. [Примеры использования](#Примеры-использования)
 5. [Использование](#Использование)
 6. [Уровни совместимости](#Уровни-совместимости)
-7. [DJ Tools](#DJ-Tools)
-8. [Разработка](#Разработка)
-9. [Спасибо](#Спасибо)
-10. [Дисклеймер](#Дисклеймер)
+7. [DJ AI Studio](#DJ-AI-Studio)
+8. [DJ Tools (Legacy)](#DJ-Tools-Legacy)
+9. [Разработка](#Разработка)
+10. [Спасибо](#Спасибо)
+11. [Дисклеймер](#Дисклеймер)
 
 ## О программе
 Загрузчик, созданный вследствие наличия *фатального недостатка* в проекте [yandex-music-download](https://github.com/kaimi-io/yandex-music-download).
@@ -179,7 +180,7 @@ uv sync --all-packages
 pnpm install
 
 # Запуск бэкенда
-uv run uvicorn dj_ai_studio.api:app --reload
+uv run uvicorn dj_ai_api.main:app --reload
 
 # Запуск веб-приложения
 cd apps/web && pnpm dev
