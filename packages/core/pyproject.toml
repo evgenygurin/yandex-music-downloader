@@ -2,7 +2,7 @@
 name = "dj-ai-studio-core"
 version = "0.1.0"
 description = "Core library for DJ AI Studio"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = { text = "MIT" }
 dependencies = [
     "pydantic>=2.0",

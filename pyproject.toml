@@ -3,21 +3,23 @@ name = "dj-ai-studio"
 version = "0.1.0"
 description = "AI-powered DJ platform for intelligent music management"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = { text = "MIT" }
 authors = [{ name = "DJ AI Studio Team" }]
 
-[tool.uv.workspace]
-members = ["packages/*", "apps/*"]
-
 [tool.uv]
+package = false
 dev-dependencies = [
     "pytest>=8.0",
     "ruff>=0.4",
 ]
 
+[tool.uv.workspace]
+members = ["packages/*", "apps/api", "apps/mcp"]
+exclude = ["apps/web"]
+
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 100
 select = [
     "E",   # pycodestyle errors
@@ -41,7 +43,3 @@ testpaths = ["packages/*/tests", "apps/*/tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
