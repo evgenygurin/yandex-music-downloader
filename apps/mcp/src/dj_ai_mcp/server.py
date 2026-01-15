@@ -266,8 +266,7 @@ async def search_tracks(
 
         if query:
             stmt = stmt.where(
-                TrackORM.title.ilike(f"%{query}%")
-                | TrackORM.artists.ilike(f"%{query}%")
+                TrackORM.title.ilike(f"%{query}%") | TrackORM.artists.ilike(f"%{query}%")
             )
         if bpm_min is not None:
             stmt = stmt.where(TrackORM.bpm >= bpm_min)
@@ -295,9 +294,7 @@ async def search_tracks(
 async def get_track(track_id: str) -> dict:
     """Get track by ID."""
     async with get_db() as session:
-        result = await session.execute(
-            select(TrackORM).where(TrackORM.id == track_id)
-        )
+        result = await session.execute(select(TrackORM).where(TrackORM.id == track_id))
         track = result.scalar_one_or_none()
 
         if track is None:
@@ -314,9 +311,7 @@ async def find_compatible_tracks(
     """Find tracks compatible for mixing."""
     async with get_db() as session:
         # Get source track
-        result = await session.execute(
-            select(TrackORM).where(TrackORM.id == track_id)
-        )
+        result = await session.execute(select(TrackORM).where(TrackORM.id == track_id))
         source = result.scalar_one_or_none()
 
         if source is None:
@@ -409,9 +404,7 @@ async def add_track_to_set(
             return {"error": "Set not found"}
 
         # Verify track exists
-        result = await session.execute(
-            select(TrackORM).where(TrackORM.id == track_id)
-        )
+        result = await session.execute(select(TrackORM).where(TrackORM.id == track_id))
         track = result.scalar_one_or_none()
         if track is None:
             return {"error": "Track not found"}
@@ -634,10 +627,7 @@ async def _get_all_sets() -> str:
         return json.dumps(
             {
                 "count": len(sets),
-                "sets": [
-                    {"id": s.id, "name": s.name, "description": s.description}
-                    for s in sets
-                ],
+                "sets": [{"id": s.id, "name": s.name, "description": s.description} for s in sets],
             },
             indent=2,
         )

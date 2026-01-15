@@ -55,9 +55,7 @@ def lyrics_format_arg(astr: str) -> core.LyricsFormat:
     try:
         return core.LyricsFormat(astr)
     except ValueError as err:
-        raise ArgumentTypeError(
-            f"Допустимые значения: {','.join(core.LyricsFormat)}"
-        ) from err
+        raise ArgumentTypeError(f"Допустимые значения: {','.join(core.LyricsFormat)}") from err
 
 
 def main():
