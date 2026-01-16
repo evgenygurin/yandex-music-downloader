@@ -1,53 +1,143 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DJ AI Studio - Web Frontend
 
-## Getting Started
+Modern Next.js 15 web application for DJ library management, audio analysis, and AI-powered set building.
 
-First, run the development server:
+## Features
+
+- 🎵 **Track Library** - Search, filter, and manage your music collection
+- 📊 **Audio Analysis** - BPM, key detection, energy levels
+- 🎚️ **DJ Sets** - Create and manage sets with harmonic mixing
+- 🎨 **Modern UI** - Built with Next.js 15, React 19, Tailwind CSS 4
+- 🌙 **Dark Mode** - Beautiful dark theme optimized for DJs
+- 📱 **Responsive** - Works on desktop, tablet, and mobile
+
+## Quick Start
+
+### Local Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Set up environment
+cp .env.example .env.local
+# Edit .env.local and set NEXT_PUBLIC_API_URL
+
+# Start development server
 pnpm dev
-# or
-bun dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Build for Production
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Build
+pnpm build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Start production server
+pnpm start
+
+# Preview on http://localhost:3000
+```
+
+## Deployment
+
+### Deploy to Vercel (Recommended)
+
+**Quick Deploy:**
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/llistochek/yandex-music-downloader&project-name=dj-ai-studio&repository-name=dj-ai-studio&root-directory=apps/web&env=NEXT_PUBLIC_API_URL&envDescription=FastAPI%20backend%20URL)
+
+**Manual Setup:**
+
+1. Push code to GitHub
+2. Import project on [vercel.com](https://vercel.com/new)
+3. Set root directory: `apps/web`
+4. Add environment variable:
+   - `NEXT_PUBLIC_API_URL` = Your FastAPI backend URL
+5. Deploy!
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions and backend deployment options.
+
+## Environment Variables
+
+| Variable | Description | Required | Default |
+|----------|-------------|----------|---------|
+| `NEXT_PUBLIC_API_URL` | FastAPI backend URL | Yes | `http://localhost:8000` |
+
+## Project Structure
+
+```
+apps/web/
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   │   ├── page.tsx      # Home page
+│   │   ├── tracks/       # Track library
+│   │   ├── sets/         # DJ sets
+│   │   └── analyze/      # Audio analysis
+│   ├── components/       # React components
+│   │   └── ui/           # shadcn/ui components
+│   └── lib/              # Utilities
+│       ├── api.ts        # API client
+│       └── utils.ts      # Helper functions
+├── public/               # Static assets
+├── next.config.ts        # Next.js config
+└── vercel.json           # Vercel deployment config
+```
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **React**: 19.2.3
+- **Styling**: Tailwind CSS 4
+- **UI Components**: shadcn/ui (Radix UI primitives)
+- **Icons**: Lucide React
+- **Package Manager**: pnpm 10.15.0
+- **TypeScript**: 5.x
+
+## Scripts
+
+```bash
+# Development
+pnpm dev          # Start dev server (port 3000)
+
+# Build
+pnpm build        # Build for production
+pnpm start        # Start production server
+
+# Linting
+pnpm lint         # Run ESLint
+
+# Deployment verification
+./scripts/verify-deployment.sh <BACKEND_URL> <FRONTEND_URL>
+```
+
+## Troubleshooting
+
+### CORS Errors
+
+Add your frontend URL to FastAPI CORS origins:
+
+```python
+# apps/api/dj_ai_api/main.py
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "https://your-frontend.vercel.app",
+    ],
+)
+```
+
+### Build Errors
+
+- Check `tsconfig.json` paths configuration
+- Ensure imports use `@/` alias
+- Verify `package.json` has `packageManager` field
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-### Automatic Deployment Setup
-
-1. Go to [Vercel](https://vercel.com) and import the repository
-2. Configure the project settings:
-   - **Framework Preset**: Next.js
-   - **Root Directory**: `apps/web`
-3. Click **Deploy**
-
-Vercel will automatically deploy on every push to main and create preview deployments for pull requests.
-
-### Configuration
-
-The `vercel.json` file is pre-configured with:
-- Framework detection for Next.js
-- pnpm package manager
-- Ignore command to skip builds when `apps/web` hasn't changed
-
-### Environment Variables
-
-If your app needs environment variables (e.g., API URL), add them in Vercel Dashboard under Project Settings > Environment Variables.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Vercel Deployment Guide](../../VERCEL_DEPLOYMENT.md)
+- [Project Contributing Guide](../../CONTRIBUTING.md)
