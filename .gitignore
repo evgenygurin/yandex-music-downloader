@@ -154,3 +154,7 @@ CLAUDE.local.md
 *.db
 *.db-journal
 packages/core/data/
+
+# Node.js dependencies
+node_modules/
+pnpm-lock.yaml
