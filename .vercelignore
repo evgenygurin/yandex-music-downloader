@@ -1,0 +1,37 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Python packages
+packages/core/
+apps/api/
+apps/mcp/
+ymd/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Legacy files
+docs/
+scripts/
+tests/
+
+# Development
+.git/
+.github/
+*.log
+*.pid
+.DS_Store
+.idea/
+.vscode/
+
+# Keep only web app
+!apps/web/
