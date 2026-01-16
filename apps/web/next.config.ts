@@ -33,17 +33,9 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // Webpack optimizations
-  webpack: (config, { dev, isServer }) => {
-    // Production optimizations
-    if (!dev && !isServer) {
-      config.optimization = {
-        ...config.optimization,
-        moduleIds: "deterministic",
-        minimize: true,
-      };
-    }
-    return config;
+  // Turbopack configuration (replaces webpack)
+  turbopack: {
+    // Empty config to enable Turbopack with default settings
   },
 };
 
