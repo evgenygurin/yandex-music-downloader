@@ -8,7 +8,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
-from .routers import analysis_router, sets_router, tracks_router, yandex_router
+from .routers import (
+    analysis_router,
+    library_router,
+    sets_router,
+    tracks_router,
+    yandex_router,
+)
 
 
 @asynccontextmanager
@@ -44,6 +50,7 @@ def create_app() -> FastAPI:
     app.include_router(sets_router, prefix="/api/v1")
     app.include_router(yandex_router, prefix="/api/v1")
     app.include_router(analysis_router, prefix="/api/v1")
+    app.include_router(library_router, prefix="/api/v1")
 
     # Health check
     @app.get("/health")
